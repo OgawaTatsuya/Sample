@@ -1,0 +1,41 @@
+## 構成
+ZinniaAndroid
++-src(Android SDK アプリケーションのソース)
+| +-my.app(GUI)
+| +-org.zinnia(ZinniaのJNIのラッパー)
+|
++-jni(Android NDK DLLのソース)(http://zinnia.sourceforge.net/index-ja.html より)
+| +*.h,*.cpp(Zinniaの元ソース(改変有)) 
+| +-jni(JNIの実装)
+|
++-libs
+| +-armeabi
+|    +-libZinniaJNI.so(Zinniaのsoファイル)
+|
++-sdcard(SDカードインストール対象物)
+  +-handwriting-ja.model(認識モデルファイル)
+
+## インストール手順
+1.アプリケーションのインストール
+$ adb install <PROJECT_HOME>/bin/ZinniaAndroid.apk
+#出力例
+#911 KB/s (248638 bytes in 0.266s)
+#pkg: /data/local/tmp/ZinniaAndroid.apk
+#	Success
+
+2.認識モデルの配置
+認識モデルファイル(<PROJECT_HOME>/sdcard/handwriting-ja.model)をAndroidの/sdcardに配置する。※現時点では固定
+
+#SDカード書き込み用にマウントし直す
+$ adb remount
+$ adb push <PROJECT_HOME>/sdcard/handwriting-ja.model /sdcard/
+#handwriting-ja.modelが表示されることを確認する。
+$ adb shell ls -l /sdcard/handwriting-ja.model
+----rwxr-x system   sdcard_rw 25875980 2011-10-02 03:42 handwriting-ja.model
+
+#libZinniaJNI.soのビルド(android-ndk-r6bを使用)
+１.<NDK_ROOT>/apps配下にプロジェクトファイルを配置する(シンボリックリンク作成でも可)
+2.<NDK_ROOT>にcdする
+3.下記コマンドを実行する。
+  make APP=ZinniaAndroid
+  *ZinniaAndroid部分はプロジェクト名(名称変更していなければそのままでよい)
